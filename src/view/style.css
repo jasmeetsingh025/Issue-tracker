@@ -1,0 +1,26 @@
+html,
+body {
+  padding: 0%;
+  margin: 0%;
+  background-image: linear-gradient(90deg, #071732 0%, #001017 100%);
+  font-family: monospace;
+}
+
+nav {
+  height: 8vh;
+  background-color: #80a0c5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 6px;
+}
+
+.navbar-brand {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0 2rem 0 2rem;
+}
+
+.nav-item {
+  font-size: 18px;
+}

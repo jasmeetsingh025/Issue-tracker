@@ -1,0 +1,8 @@
+# ignore Node_modules
+node_modules
+
+# skip .env file
+.env
+
+# skip vscode files
+.vscode
