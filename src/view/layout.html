@@ -14,33 +14,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-grey">
-        <div class="container-fluid">
-            <!-- <div class="logo">
-                <div>
-                    <a href="/issue-tracker"><img src="/Images/handlogo.jpg" alt=""></a>
-                </div>
-            </div> -->
-            <a href="#" class="navbar-brand">Navbar</a>
-            <button class="navbar-toggler ml-3" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Link</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Navbar</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -54,33 +28,44 @@
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+                        <a class="nav-link active" href="#">Issue</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        <a class="nav-link active" href="#">Project</a>
                     </li>
                 </ul>
                 <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control me-2" type="search" placeholder="Search or Jump to..."
+                        aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
+                <button type="button" class="btn btn-outline-dark ms-2 me-2">Sign in</button>
+                <button type="button" class="btn btn-dark">Sign up</button>
             </div>
         </div>
-    </nav> -->
+    </nav>
+
+    <header class="text-white text-center py-5">
+        <div class="container">
+            <h1 class="display-3">Welcome to Issue Tracker</h1>
+            <p class="h2">Track and manage issues effectively</p>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <section>
+            <div class="container d-flex justify-content-center align-item-center text-center text-white flex-column">
+                <p class="display-4">
+                    Project planning for developers
+                </p>
+                <p class="h4 my-3 para-text main-para">
+                    Create issues, break them into tasks, track relationships, add custom fields, and have
+                    conversations. Visualize large projects as tables, boards, or roadmaps, and automate everything with
+                    code.
+                </p>
+            </div>
+        </section>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
         integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
