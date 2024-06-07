@@ -9,11 +9,12 @@ import {
   resetPassword,
   sendOtp,
   verifyOtpToReset,
-} from "../../controller/user/user.controller";
+  renderLayOut,
+} from "../../controller/user/user.controller.js";
 
 const routes = express.Router();
 
-routes.route("/").get(showLogin);
+routes.route("/").get(renderLayOut);
 
 routes.route("/register").get(showRegister);
 

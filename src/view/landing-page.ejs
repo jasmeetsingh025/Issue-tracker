@@ -1,0 +1,56 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>Project List</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Creation Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employee-data">
+                        <% projects.forEach(project=> { %>
+                            <tr>
+                                <td>
+                                    <%= project.projectId.name %>
+                                </td>
+                                <td>
+                                    <%= project.projectId.description %>
+                                </td>
+                                <td>
+                                    <%= project.projectId.type %>
+                                </td>
+                                <td>
+                                    <%= new Date(project.projectId.createdOnDate).toLocaleString() %>
+                                </td>
+                                <td>
+                                    <a href="/issue-tracker/project/<%= project.projectId._id %>/"
+                                        class="btn btn-primary">
+                                        <i class="fa-solid fa-angles-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Uncomment the pagination section if needed -->
+
+        <div class="card-footer d-flex justify-content-between">
+            <a href="#" id="previous" class="btn btn-secondary">Previous</a>
+            <span id="pageNumber" currentPage="<%= currentPage %>" class="align-self-center">
+                <%= currentPage %>
+            </span>
+            <a href="#" id="next" class="btn btn-secondary">Next</a>
+        </div>
+
+    </div>
+</div>

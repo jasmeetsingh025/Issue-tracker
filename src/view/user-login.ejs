@@ -1,0 +1,25 @@
+<h1 class="text-white text-center display-2 mt-5 mb-5">User Login</h1>
+<% if(error && error.message){ %>
+    <div class="alert alert-danger" role="alert">
+        <li>
+            <%= error.message %>
+        </li>
+    </div>
+    <% } %>
+        <form action="/login" method="post" class="mx-auto" style="max-width: 400px;">
+            <div class="mb-3 form-group">
+                <label class="text-white form-label" for="email">Email Address</label>
+                <input class="form-control" id="email" name="email" placeholder="Email Address">
+            </div>
+            <div class="mb-3 form-group">
+                <label class="text-white form-label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3 p-2 w-100">Login</button>
+        </form>
+        <p class="text-center text-white h4 mt-4">Create an account? <a href="/register"
+                class="mx-2 nav-link">Register</a>
+        </p>
+        <p class="text-center text-white h4 mt-4">Forget Password? <a href="/forgotpassword"
+                class="mx-2 nav-link">Password Reset</a>
+        </p>

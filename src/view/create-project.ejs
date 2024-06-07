@@ -1,0 +1,58 @@
+<div class="registration">
+    <div class="d-flex align-items-center justify-content-between text-white registration-heading mt-5 mb-5">
+        <h3 class="display-2">Create Project</h3>
+        <span class="x-pos display-4"><a href="/issue-tracker/"
+                class="rounded-3 fs-4 btn btn-primary text-decoration-none">Create
+                Issue</a></span>
+    </div>
+    <div class="registration-form">
+        <% if(error){ %>
+            <ul>
+                <li class="error-message">
+                    <%= error.msg %>
+                </li>
+            </ul>
+            <% } %>
+                <form action="/issue-tracker/project/create" method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="name" class="text-white form-label">Project Name<span
+                                    class="value-required">*</span></label>
+                            <input type="text" class="form-control form-control-lg" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="description" class="text-white form-label">Description<span
+                                    class="value-required">*</span></label>
+                            <textarea class="form-control form-control-sm" id="description" name="description"
+                                required></textarea>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="type" class="text-white form-label">Project Type<span
+                                    class="value-required">*</span></label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Android Development">Android Development</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="duration" class="text-white form-label">Duration</label>
+                            <input type="date" class="form-control" id="duration" name="duration">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="organisation" class="text-white form-label">Organisation<span
+                                    class="value-required">*</span></label>
+                            <input type="text" class="form-control" id="organisation" name="organisation">
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg mt-3 px-4 fs-5">Submit</button>
+                    </div>
+                </form>
+    </div>
+</div>

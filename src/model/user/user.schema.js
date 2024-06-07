@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
-import crypto from "crypto";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: "User",
-    enum: ["SuperAdmin", "Admin", "User"],
+    enum: ["superadmin", "admin", "user"],
   },
   tokens: [
     {
@@ -58,17 +58,29 @@ const userSchema = new mongoose.Schema({
       ref: "Project",
     },
   ],
-  restPasswordToken: String,
+  resetPasswordToken: String,
   resetPasswordTokenExpiry: Date,
 });
 
-userSchema.pre("save", async function (next) {
-  try {
-    const hashedPassword = await bcrypt.hash(this.password, 10);
-    this.password = hashedPassword;
-  } catch (e) {
-    next(e);
+userSchema.pre("save", function (next) {
+  if (this.isModified("username")) {
+    this.username = this.username.toLowerCase();
   }
+  if (this.isModified("email")) {
+    this.email = this.email.toLowerCase();
+  }
+  next();
+});
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    try {
+      const hashedPassword = await bcrypt.hash(this.password, 10);
+      this.password = hashedPassword;
+    } catch (e) {
+      next(e);
+    }
+  }
+  next();
 });
 // JWT Token
 userSchema.methods.getJWTToken = function () {
@@ -80,29 +92,13 @@ userSchema.methods.getJWTToken = function () {
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-// generatePasswordResetToken
-userSchema.methods.getResetPasswordToken = async function () {
-  const resetToken = crypto.randomBytes(20).toString("hex");
-
-  // hashing and updating user resetPasswordToken
-  this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-
-  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-
-  return resetToken;
-};
+// generatePasswordResetOtp
 userSchema.methods.getResetPasswordOtp = async function () {
   const otp = (
     Math.floor(Math.random() * (100000 - 999999 + 1)) + 999999
   ).toString();
-  this.restPasswordToken = crypto
-    .createHash("sha256")
-    .update(otp)
-    .digest("hex");
-  this.resetPasswordTokenExpiry = Date.now() + 10 * 60 * 1000;
+  this.resetPasswordToken = otp;
+  this.resetPasswordTokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
   return otp;
 };
 

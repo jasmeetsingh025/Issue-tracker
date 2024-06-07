@@ -12,5 +12,3 @@ class ApplicationError extends Error {
     next();
   };
 }
-
-module.exports = ApplicationError;

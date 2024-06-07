@@ -1,0 +1,176 @@
+<div class="main-page container">
+    <div class="row">
+        <div class="col mb-4">
+            <h2 class="display-2 text-white mt-4 mb-2">Project</h2>
+            <hr>
+            <div class="h2 text-white">
+                <ul>
+                    <% if (project) { %>
+                        <li>
+                            <%= project.name %>
+                        </li>
+                        <% } %>
+                </ul>
+            </div>
+            <hr>
+            <div class="employee-table">
+                <div class="employee-top">
+                    <table class="table text-white">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Assigned to</th>
+                                <th>Reported on</th>
+                                <th>Reported by</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="employee-data">
+                            <% if(issues !=null) { issues.forEach(issue=> { %>
+                                <tr>
+                                    <td>
+                                        <%= issue.issueType %>
+                                    </td>
+                                    <td>
+                                        <%= issue.summary %>
+                                    </td>
+                                    <td>
+                                        <%= issue.status %>
+                                    </td>
+                                    <td>
+                                        <%= issue.priority %>
+                                    </td>
+                                    <td>
+                                        <%= issue.assignTo.name %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(issue.createdDate).toLocaleString() %>
+                                    </td>
+                                    <td>
+                                        <%= issue.assignBy.name %>
+                                    </td>
+                                    <td>
+                                        <a href="/issue-tracker/issue/view/<%= projectId %>/<%= issue._id %>"
+                                            id="create-issue">
+                                            <i class="fa-solid fa-angles-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% })} %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="issue-filter">
+                <h3 class="h4 text-white mb-3">Filters</h3>
+                <form action="/issue-tracker/<%= projectId %>/filter" method="post">
+                    <div class="text-white">
+                        <label for="assignee" class="form-label">Assignee</label>
+                        <select class="form-select mt-2 mb-2" name="assignee" id="assignee">
+                            <option class="text-white" value="">Select</option>
+                            <% users.forEach(user=> { %>
+                                <option value="<%= user._id %>">
+                                    <%= user.username %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+                    <div class="text-white mb-3">
+                        <label for="type" class="mt-2 form-label">Type</label>
+                        <select class="form-select mt-2" name="type" id="type">
+                            <option value="">Select</option>
+                            <% if(types !=null) { %>
+                                <option value="<%= types %>">
+                                    <%= types %>
+                                </option>
+                                <% } %>
+                        </select>
+                    </div>
+                    <div class="text-white mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select mt-2" name="status" id="status">
+                            <option value="">Select</option>
+                            <% if (status !=null) { %>
+                                <option value="<%= status %>">
+                                    <%= status %>
+                                </option>
+                                <% }%>
+                        </select>
+                    </div>
+                    <div class="text-white mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select mt-2" name="priority" id="priority">
+                            <option value="">Select</option>
+                            <% if(priority !=null) { %>
+                                <option value="<%= priority %>">
+                                    <%= priority %>
+                                </option>
+                                <% } %>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3 w-100">Submit</button>
+                </form>
+            </div>
+        </div>
+        <!-- <div class="col-md-6">
+            <div class="employee-table">
+                <div class="employee-top">
+                    <table class="table text-white">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Assigned to</th>
+                                <th>Reported on</th>
+                                <th>Reported by</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="employee-data">
+                            <% if(issues !=null) { issues.forEach(issue=> { %>
+                                <tr>
+                                    <td>
+                                        <%= issue.issueType %>
+                                    </td>
+                                    <td>
+                                        <%= issue.summary %>
+                                    </td>
+                                    <td>
+                                        <%= issue.status %>
+                                    </td>
+                                    <td>
+                                        <%= issue.priority %>
+                                    </td>
+                                    <td>
+                                        <%= issue.assignTo.name %>
+                                    </td>
+                                    <td>
+                                        <%= new Date(issue.createdDate).toLocaleString() %>
+                                    </td>
+                                    <td>
+                                        <%= issue.assignBy.name %>
+                                    </td>
+                                    <td>
+                                        <a href="/issue-tracker/issue/view/<%= projectId %>/<%= issue._id %>"
+                                            id="create-issue">
+                                            <i class="fa-solid fa-angles-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% })} %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>

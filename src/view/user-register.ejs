@@ -1,0 +1,41 @@
+<h1 class="text-white text-center display-2 mt-5 mb-5">Register New User</h1>
+<% if(error && error.message){ %>
+    <div class="alert alert-danger" role="alert">
+        <li>
+            <%= error.message %>
+        </li>
+    </div>
+    <% } %>
+        <form action="/register" method="post" class="mx-auto" style="max-width: 500px;">
+            <div class="mb-3">
+                <label for="username" class="text-white form-label">User Name</label>
+                <input name="username" type="text" class="form-control" placeholder="User Name" id="userName">
+            </div>
+            <div class=" mb-3">
+                <label for="email" class="text-white form-lable">Email Address</label>
+                <input type="email" name="email" placeholder="email address" id="input-email" class="form-control"
+                    aria-describedby="emailHelp">
+                <div id="emalHelp" class="text-white form-text">We' ll never share your email with any one else.</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="text-white form-label">Password</label>
+                <input name="password" type="password" class="form-control" placeholder="password" id="InputPassword">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="text-white form-label">Phone Number</label>
+                <input name="phone" type="text" class="form-control" placeholder="Phone Number" id="Phone">
+            </div>
+            <div class="mb-3">
+                <label for="role" class="text-white form-label">Role</label>
+                <input name="role" type="text" class="form-control" placeholder="User Role" id="role">
+            </div>
+            <div class="mb-3">
+                <label for="jobtitle" class="text-white form-label">Job Title</label>
+                <input name="jobtitle" type="text" class="form-control" placeholder="Job Title" id="jobtitle">
+            </div>
+            <div class="mb-3">
+                <label for="dept" class="text-white form-label">Department</label>
+                <input name="dept" type="text" class="form-control" placeholder="User Role" id="dept">
+            </div>
+            <button type="submit" class="btn btn-primary mb-5">Submit</button>
+        </form>

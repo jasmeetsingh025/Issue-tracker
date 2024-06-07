@@ -2,11 +2,11 @@ import {
   createUserRepo,
   findUserForPasswordResetRepo,
   findUserRepo,
-} from "../../model/user/user.repository";
-import { sendToken } from "../../../util/sendToken";
+} from "../../model/user/user.repository.js";
+import { sendToken } from "../../../util/sendToken.js";
 
 export const showRegister = async (req, res, next) => {
-  return res.render("user-register", {
+  return res.render("user-register.ejs", {
     error: null,
     user: null,
     projectId: null,
@@ -14,10 +14,10 @@ export const showRegister = async (req, res, next) => {
 };
 
 export const registerUser = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
   try {
     if (!email || !password) {
-      return res.render("user-register", {
+      return res.render("user-register.ejs", {
         error: {
           statusCode: 400,
           message: "Please fill all the fields",
@@ -27,11 +27,11 @@ export const registerUser = async (req, res, next) => {
       });
     }
     const isUserFound = await findUserRepo(
-      { username: name, email: email },
+      { username: username, email: email },
       true
     );
     if (isUserFound) {
-      return res.render("user-register", {
+      return res.render("user-register.ejs", {
         error: {
           statusCode: 400,
           message: "User already present",
@@ -39,33 +39,45 @@ export const registerUser = async (req, res, next) => {
         user: null,
         projectId: null,
       });
-    } else {
-      const newUser = await createUserRepo({
-        username: name,
-        password: password,
-        email: email,
-      });
-      sendToken(newUser, res, 200);
-      return res.render("user-login", {
-        error: null,
+    }
+    const newUser = await createUserRepo(req.body);
+    const token = await sendToken(newUser);
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    };
+    return res.cookie("token", token, cookieOptions).render("user-login.ejs", {
+      error: null,
+      user: newUser,
+      projectId: null,
+      success: true,
+    });
+  } catch (error) {
+    if (!res.headersSent) {
+      return res.render("error-404", {
+        error: {
+          statusCode: 500,
+          message: "Something went wrong",
+        },
         user: null,
         projectId: null,
       });
     }
-  } catch (error) {
-    return res.render("error-404", {
-      error: {
-        statusCode: 500,
-        message: "Something went wrong",
-      },
-      user: null,
-      projectId: null,
-    });
+    console.error("Failed to handle error properly:", error);
   }
 };
 
+export const renderLayOut = async (req, res, next) => {
+  return res.render("layout.ejs", {
+    render: "layout",
+    user: null || req.cookies.user,
+  });
+};
+
 export const showLogin = async (req, res, next) => {
-  return res.render("user-login", {
+  return res.render("user-login.ejs", {
     error: null,
     user: null,
     projectId: null,
@@ -76,7 +88,7 @@ export const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     if (!email || !password) {
-      return res.render("user-login", {
+      return res.render("user-login.ejs", {
         error: {
           statusCode: 400,
           message: "Please fill all the fields",
@@ -87,7 +99,7 @@ export const loginUser = async (req, res, next) => {
     }
     const user = await findUserRepo({ email: email }, true);
     if (!user) {
-      return res.render("user-login", {
+      return res.render("user-login.ejs", {
         error: {
           statusCode: 400,
           message: "User not found",
@@ -98,7 +110,7 @@ export const loginUser = async (req, res, next) => {
     }
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
-      return res.render("user-login", {
+      return res.render("user-login.ejs", {
         error: {
           statusCode: 400,
           message: "Invalid password",
@@ -107,28 +119,38 @@ export const loginUser = async (req, res, next) => {
         projectId: null,
       });
     }
-    sendToken(user, res, 200);
-    res.cookie("user", user);
+    const token = await sendToken(user);
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+      // httpOnly: true,
+    };
     req.session.userId = user._id;
     req.session.userEmail = email;
-    return res.redirect("/issue-tracker");
+    return res
+      .cookie("token", token, cookieOptions)
+      .cookie("user", user)
+      .redirect("/issue-tracker");
   } catch (err) {
     console.log(err);
-    return res.render("error-404", {
-      error: {
-        statusCode: 500,
-        message: "Something went wrong",
-      },
-      user: null,
-      projectId: null,
-    });
+    return res
+      .render("error-404", {
+        error: {
+          statusCode: 500,
+          message: "Something went wrong",
+        },
+        user: null,
+        projectId: null,
+      })
+      .json({ success: true, user, token });
   }
 };
 
 //! You can change the fender file name later...
 
 export const showForgotPassword = async (req, res, next) => {
-  return res.render("user-password-reset", {
+  return res.render("user-password-reset.ejs", {
     error: null,
     user: null,
     projectId: null,
@@ -137,10 +159,10 @@ export const showForgotPassword = async (req, res, next) => {
 
 export const sendOtp = async (req, res, next) => {
   try {
-    const email = req.body;
+    const { email } = req.body;
     const user = await findUserRepo({ email: email });
     if (!user) {
-      return res.render("user-password-reset", {
+      return res.render("user-password-reset.ejs", {
         error: {
           statusCode: 400,
           message: "User not found",
@@ -152,13 +174,23 @@ export const sendOtp = async (req, res, next) => {
     const otp = await user.getResetPasswordOtp();
     await user.save();
     // await sendPasswordResetEmail(user,otp);
-    sendToken(user, res, 200);
+    const token = await sendToken(user);
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    };
     req.session.userEmail = email;
-    return res.render("user-password-otp-verify", {
-      error: null,
-      user: null,
-      projectId: null,
-    });
+    return res
+      .cookie("token", token, cookieOptions)
+      .render("user-password-reset.ejs", {
+        error: null,
+        user: user,
+        projectId: null,
+        otp: otp,
+        success: true,
+      });
   } catch (error) {
     return res.render("error-404", {
       error: {
@@ -186,7 +218,7 @@ export const resendOtp = async (req, res, next) => {
     }
     const user = await findUserRepo({ email: email });
     if (!user) {
-      return res.render("user-password-reset", {
+      return res.render("user-password-reset.ejs", {
         error: {
           statusCode: 400,
           message: "User not found",
@@ -198,14 +230,26 @@ export const resendOtp = async (req, res, next) => {
     const otp = await user.getResetPasswordOtp();
     await user.save();
     // await sendPasswordResetEmail(user,otp);
-    sendToken(user, res, 200);
+    const token = await sendToken(user);
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    };
     req.session.userEmail = email;
-    return res.render("user-password-otp-verify", {
-      error: null,
-      user: null,
-      projectId: null,
-    });
+    return res
+      .cookie("token", token, cookieOptions)
+      .cookie("userEmail", email)
+      .render("user-password-reset.ejs", {
+        error: null,
+        user: null,
+        projectId: null,
+        otp: otp,
+        success: true,
+      });
   } catch (error) {
+    console.log(error);
     return res.render("error-404", {
       error: {
         statusCode: 500,
@@ -219,10 +263,10 @@ export const resendOtp = async (req, res, next) => {
 
 export const verifyOtpToReset = async (req, res, next) => {
   try {
-    const otp = req.body;
+    const { otp } = req.body;
     const isUserFound = await findUserForPasswordResetRepo(otp);
     if (!isUserFound) {
-      return res.render("user-password-otp-verify", {
+      return res.render("user-password-reset.ejs", {
         error: {
           statusCode: 400,
           message: "Otp expired or mismatched",
@@ -231,16 +275,26 @@ export const verifyOtpToReset = async (req, res, next) => {
         projectId: null,
       });
     }
-    isUserFound.restPasswordToken = "";
+    isUserFound.resetPasswordToken = "";
     isUserFound.resetPasswordTokenExpiry = "";
-    sendToken(user, res, 200);
+    const token = await sendToken(isUserFound);
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
+      httpOnly: true,
+    };
     isUserFound.save();
-    return res.render("user-new-password", {
-      error: null,
-      user: null,
-      projectId: null,
-    });
+    return res
+      .cookie("token", token, cookieOptions)
+      .render("user-new-password.ejs", {
+        error: null,
+        user: null,
+        projectId: null,
+        success: true,
+      });
   } catch (error) {
+    console.log(error);
     return res.render("error-404", {
       error: {
         statusCode: 500,
@@ -259,13 +313,16 @@ export const resetPassword = async (req, res, next) => {
       return res.render("error-404", {
         error: {
           statusCode: 400,
-          message: "Something went wrong",
+          message: "failed in validations",
         },
         user: null,
         projectId: null,
       });
     }
     const { newPassword, confirmPassword } = req.body;
+    console.log(
+      `new password: ${newPassword} and confirm password: ${confirmPassword}`
+    );
     if (newPassword !== confirmPassword) {
       return res.render("user-new-password", {
         error: {
@@ -287,7 +344,7 @@ export const resetPassword = async (req, res, next) => {
         projectId: null,
       });
     }
-    const isPasswordMatched = await user.comparePassword(newPassword);
+    const isPasswordMatched = await user.comparePassword(confirmPassword);
     if (isPasswordMatched) {
       return res.render("user-new-password", {
         error: {
@@ -305,9 +362,18 @@ export const resetPassword = async (req, res, next) => {
         console.error("Error destroying session:", err);
         return res.status(500).send("Error destroying session");
       }
-      return res.redirect("/login");
+      return res.render("user-new-password", {
+        success: {
+          statusCode: 200,
+          message: "Password successfully updated. Redirecting to login...",
+        },
+        user: null,
+        projectId: null,
+        error: null,
+      });
     });
   } catch (error) {
+    console.log(error);
     return res.render("error-404", {
       error: {
         statusCode: 500,

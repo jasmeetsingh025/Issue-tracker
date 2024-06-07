@@ -1,7 +1,8 @@
-import UserIssueModel from "../user/user.project.issue.schema";
-import IssueModel from "../issue/issue.schema";
+import UserIssueModel from "../user/user.project.issue.schema.js";
+import IssueModel from "../issue/issue.schema.js";
+import projectModel from "../project/project.schema.js";
 
-export const createIssue = async (
+export const createIssueRepo = async (
   issueData,
   attachments,
   userId,
@@ -11,16 +12,21 @@ export const createIssue = async (
   if (issueData.assignedTo == "automatic") {
     issueData.assignTo = userId;
   }
+  issueData.projectId = projectId;
   const issue = new IssueModel(issueData);
-  attachments.forEach((file) => {
-    issue.attachments.push(file.filename);
-  });
-  const issueCreated = issue.save();
+  if (attachments != null && attachments.length > 0) {
+    attachments.forEach((file) => {
+      issue.attachments.push(file.filename);
+    });
+  }
+  const issueCreated = await issue.save();
   const userIssue = new UserIssueModel({
     userId: userId,
     issueId: issue._id,
-    projectId: projectId,
+    projectID: projectId,
   });
+  await userIssue.save();
+  await projectModel.findByIdAndUpdate(projectId, { issues: issue._id });
   if (!userIssue || !issueCreated) {
     return {
       message: "Issue not created",
@@ -30,7 +36,7 @@ export const createIssue = async (
 };
 
 export const getIssue = async (factor) => {
-  return await IssueModel.findOne(factor)
+  return IssueModel.findOne(factor)
     .populate("assignBy")
     .populate("assignTo")
     .populate("projectId");
@@ -45,17 +51,17 @@ export const getAllIssues = async (factor) => {
 
 export const getIssueTypes = async (factor) => {
   const issueType = await IssueModel.findOne(factor);
-  return issueType.issueType;
+  return issueType != null ? issueType.issueType : null;
 };
 
 export const getIssueStatus = async (factor) => {
   const issueStatus = await IssueModel.findOne(factor);
-  return issueStatus.status;
+  return issueStatus != null ? issueStatus.status : null;
 };
 
 export const getIssuePriorities = async (factor) => {
   const issuePriority = await IssueModel.findOne(factor);
-  return issuePriority.priority;
+  return issuePriority ? issuePriority.priority : null;
 };
 
 export const searchIssues = async (query) => {

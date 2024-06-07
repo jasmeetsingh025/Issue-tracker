@@ -3,9 +3,9 @@ import {
   showIssue,
   shpowUpdatedIssue,
   updateIssue,
-} from "../../controller/issues/issue.controller";
-import { upload } from "../../../middleware/upload.middleware";
-import { createIssue } from "../../model/issue/issue.repository";
+  createIssue,
+} from "../../controller/issues/issue.controller.js";
+import { upload } from "../../../middleware/upload.middleware.js";
 
 const issueRouter = express.Router();
 

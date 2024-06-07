@@ -2,14 +2,15 @@ import {
   getIssue,
   getIssueStatus,
   getIssueTypes,
-} from "../../model/issue/issue.repository";
+  createIssueRepo,
+} from "../../model/issue/issue.repository.js";
 import { getProject } from "../../model/project/project.repository.js";
 import { getUserSpecificProjectRepo } from "../../model/user/user.repository.js";
 
 export const showIssue = async (req, res, next) => {
   try {
     const projectId = req.params.projectId;
-    const project = getProject(projectId);
+    const project = await getProject(projectId);
     const users = getUserSpecificProjectRepo(projectId);
     const types = getIssueTypes(projectId);
     const status = getIssueStatus(projectId);
@@ -42,7 +43,12 @@ export const createIssue = async (req, res, next) => {
     const attachments = req.files;
     const projectId = req.params.projectId;
     const userId = req.cookies.user._id;
-    const issueCreated = createIssue(issueData, attachments, userId, projectId);
+    const issueCreated = createIssueRepo(
+      issueData,
+      attachments,
+      userId,
+      projectId
+    );
     if (!issueCreated) {
       return res.render("error-404", {
         error: {
@@ -70,12 +76,12 @@ export const shpowUpdatedIssue = async (req, res, next) => {
   try {
     const issueId = req.params.issueId;
     const projectId = req.params.projectId;
-    const issue = getIssue({ _id: issueId });
-    const project = getProject({ _id: projectId });
-    const users = getUserSpecificProjectRepo(projectId);
-    const types = getIssueTypes(projectId);
-    const status = getIssueStatus(projectId);
-    const priority = getIssuePriority(projectId);
+    const issue = await getIssue({ _id: issueId });
+    const project = await getProject({ _id: projectId });
+    const users = await getUserSpecificProjectRepo(projectId);
+    const types = await getIssueTypes(projectId);
+    const status = await getIssueStatus(projectId);
+    const priority = await getIssuePriority(projectId);
     return res.render("updtate-issue", {
       error: null,
       user: req.cookies.user,

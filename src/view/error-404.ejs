@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center mt-5">
+        <div class="col-md-8">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Error <%= error.statusCode %>
+                </h4>
+                <p>
+                    <%= error.message %>
+                </p>
+                <% if (user) { %>
+                    <hr>
+                    <p class="mb-0">User: <%= user %>
+                    </p>
+                    <% } %>
+                        <% if (projectId) { %>
+                            <p class="mb-0">Project ID: <%= projectId %>
+                            </p>
+                            <% } %>
+            </div>
+            <div class="d-flex justify-content-center">
+                <a href="/login" class="btn btn-primary w-100">Go to Login</a>
+            </div>
+        </div>
+    </div>
+</div>
