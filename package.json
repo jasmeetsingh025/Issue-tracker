@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "babel main -d build"
   },
   "type": "module",
   "author": "Jasmeet Singh",
@@ -30,6 +31,9 @@
     "validator": "^13.12.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.24.8",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
     "nodemon": "^3.1.0"
   }
 }
